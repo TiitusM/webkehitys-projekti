@@ -71,7 +71,7 @@ async function animalPage() {
   const msg = h('textarea', { id: 'message', name: 'message', rows: 3 });
   const send = h('button', { className: 'btn', type: 'submit', disabled: adopted(a) }, 'Adoptoi minut');
   const form = h('form', {}, h('h2', {}, `Adoptiohakemus: ${a.name}`),
-    fld('applicantName', 'Nimesi'), fld('email', 'Sähköposti', 'email'), fld('phone', 'Puhelinnumero', 'tel', false),
+    fld('applicantName', 'Nimesi'), fld('email', 'Sähköposti', 'email'), fld('phone', 'Puhelinnumero', 'tel'),
     h('label', {}, 'Kerro itsestäsi ja kodistasi', msg), send);
   if (adopted(a)) form.prepend(h('p', { className: 'note' }, 'Tämä eläin on jo adoptoitu.'));
 
@@ -85,7 +85,7 @@ async function animalPage() {
       });
       location.href = `thanks.html?name=${encodeURIComponent(a.name)}`;
     } catch (err) {
-      show(err.status === 409 ? 'Joku ehti adoptoida tämän eläimen ensin.' : 'Hakemuksen lähetys epäonnistui. Tarkista tiedot ja yritä uudelleen.');
+      show(err.status === 409 ? 'Joku ehti adoptoida tämän eläimen ensin.' : err.status ? err.message : 'Yhteys palvelimeen epäonnistui. Yritä hetken päästä uudelleen.');
       send.disabled = err.status === 409;
     }
   };
