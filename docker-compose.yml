@@ -1,0 +1,26 @@
+services:
+  server-b:
+    build: .
+    container_name: elainsuoja-server-b
+    ports:
+      - "4000:4000"
+    environment:
+      PORT: 4000
+      DB_PATH: /app/data/adoptions.db
+      # Koko projektin ympäristössä Server A:n kontin nimi on server-a.
+      SERVER_A_URL: ${SERVER_A_URL:-http://server-a:3000}
+    volumes:
+      - adoptions-data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:4000/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  adoptions-data:
