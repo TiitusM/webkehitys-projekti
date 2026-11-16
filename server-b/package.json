@@ -1,0 +1,16 @@
+{
+  "name": "server-b",
+  "version": "1.0.0",
+  "description": "Adoptiopalvelin Vaasan Eläinsuoja -projektiin",
+  "main": "src/index.js",
+  "private": true,
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "mock-a": "node scripts/mock-server-a.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.4.1",
+    "express": "^4.21.2"
+  }
+}
