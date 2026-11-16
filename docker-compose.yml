@@ -1,6 +1,54 @@
 services:
+  frontend:
+    build: ./frontend
+    container_name: elainsuoja-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      server-a:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - -q
+        - --spider
+        - http://127.0.0.1/
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  server-a:
+    build: ./server-a/server-a
+    container_name: elainsuoja-server-a
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      DB_PATH: /app/data/animals.db
+      # Server B hoitaa adoptiohakemusten tallennuksen.
+      SERVER_B_URL: ${SERVER_B_URL:-http://server-b:4000}
+    volumes:
+      - animals-data:/app/data
+    depends_on:
+      server-b:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3000/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
   server-b:
-    build: .
+    build: ./server-b
     container_name: elainsuoja-server-b
     ports:
       - "4000:4000"
@@ -21,6 +69,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 5s
 
 volumes:
+  animals-data:
   adoptions-data:
