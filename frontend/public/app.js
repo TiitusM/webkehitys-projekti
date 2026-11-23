@@ -25,8 +25,8 @@ const ageLabel = (a) => (isNaN(a.age) ? a.age : `${a.age} v`);
 const ageLong = (a) => (isNaN(a.age) ? a.age : Number(a.age) === 1 ? '1 vuosi' : `${a.age} vuotta`);
 const adopted = (a) => /adopt/i.test(String(a.status));
 const photo = (a) => {
-  const i = h('img', { src: a.imageUrl || a.image_url || a.image || `images/${String(a.name).toLowerCase()}.svg`, alt: a.name, loading: 'lazy' });
-  i.onerror = () => { i.onerror = null; i.src = placeholder(a); };
+  const i = h('img', { src: a.imageUrl || a.image_url || a.image || `images/${String(a.name).toLowerCase()}.jpg`, alt: a.name, loading: 'lazy' });
+  i.onerror = () => { i.onerror = () => { i.onerror = null; i.src = placeholder(a); }; i.src = `images/${String(a.name).toLowerCase()}.svg`; };
   return i;
 };
 const show = (text) => { const m = $('#msg'); m.textContent = text; m.hidden = false; };
